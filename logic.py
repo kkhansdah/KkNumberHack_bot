@@ -1,21 +1,34 @@
 from collections import Counter
 
-def predict_from_input(last_10_numbers):
-    freq = Counter(last_10_numbers)
-    top_freq = freq.most_common(3)
+def predict_numbers(last10):
+    freq = Counter(last10)
+    scores = {}
 
-    mod = (last_10_numbers[-1] + last_10_numbers[-2]) % 10
-
-    score = {}
     for n in range(10):
-        score[n] = 0
-        if n == mod:
-            score[n] += 2
-        if n in [x[0] for x in top_freq]:
-            score[n] += 3
-        if last_10_numbers.count(n) <= 1:
-            score[n] += 1
+        score = 0
+        if freq[n] >= 2:
+            score += 2
+        if n == sum(last10[-5:]) % 10:
+            score += 1
+        for i in range(len(last10)):
+            if last10[i] == n:
+                gap = len(last10) - i
+                if 2 <= gap <= 6:
+                    score += 1.5
+        if n == last10[-1]:
+            score += 1.5
+        if (n >= 5 and sum(1 for x in last10[-5:] if x < 5) >= 4) or (n < 5 and sum(1 for x in last10[-5:] if x >= 5) >= 4):
+            score += 1
 
-    top2 = sorted(score.items(), key=lambda x: x[1], reverse=True)[:2]
-    logic = "Frequency 📊 + Modulo 🔁 + Pattern 📈"
-    return top2[0][0], top2[1][0], logic
+        scores[n] = round(score, 2)
+
+    top3 = sorted(scores.items(), key=lambda x: x[1], reverse=True)[:3]
+
+    reply = "🎯 *अगला अनुमानित नंबर (Top 3):*\n\n"
+    levels = ["🔵 Level 1", "🟢 Level 2", "🟣 Level 3"]
+    for i, (num, sc) in enumerate(top3):
+        reply += f"{levels[i]}: {num}  (Score: {sc})\n"
+    reply += "\n📊 लॉजिक: Frequency 📈 + Modulo ➗ + Gap 🔁 + Trend 📐"
+    reply += "\n📌 Smart Bet: Level 1 या 2\n🔥 Bonus: Try all 3 if sure profit!"
+
+    return reply
