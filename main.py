@@ -1,7 +1,7 @@
 from telegram.ext import Updater, CommandHandler
 from logic import get_prediction
 
-TOKEN = "7600921671:AAG3uuoKDA-KWUtVCHwhzkK7K8WCcSfqN9s"
+TOKEN = "7600921671:AAEGttPW5TnBd9Y_9KWtKfzn1pX3SklT3oI"
 
 def start(update, context):
     update.message.reply_text("👋 नमस्ते! मुझे 10 नंबर भेजो:\nउदाहरण: /predict 5 4 3 2 1 6 8 7 2 3")
